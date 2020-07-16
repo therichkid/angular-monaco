@@ -1,9 +1,9 @@
+// This reference is needed to get types for monaco in vs code
+/// <reference path="../../../../node_modules/monaco-editor/monaco.d.ts" />
+
 import { AfterViewInit, OnDestroy, ElementRef, Directive } from "@angular/core";
 
 import { environment } from "../../../environments/environment";
-
-// Add monaco typings
-/// <reference path="monaco.d.ts" />
 
 declare const ResizeObserver;
 
@@ -50,12 +50,13 @@ export abstract class BaseDirective implements AfterViewInit, OnDestroy {
 
   initMonaco(): Promise<void> {
     return new Promise((resolve: any) => {
-      if (typeof (window as any).monaco === "object") {
+      if (typeof monaco === "object") {
         resolve();
         return;
       }
       (window as any).require.config({ paths: { vs: `${this.basePath}/vs` } });
       (window as any).require(["vs/editor/editor.main"], () => {
+        this.setJsDefaults();
         resolve();
       });
     });
@@ -69,6 +70,19 @@ export abstract class BaseDirective implements AfterViewInit, OnDestroy {
     });
     const view: HTMLDivElement = this.containerView.nativeElement;
     this.resizeObserver.observe(view);
+  }
+
+  setJsDefaults(): void {
+    monaco.languages.typescript.javascriptDefaults.setDiagnosticsOptions({
+      noSemanticValidation: false,
+      noSyntaxValidation: false
+    });
+    monaco.languages.typescript.javascriptDefaults.setCompilerOptions({
+      target: monaco.languages.typescript.ScriptTarget.ES2015,
+      allowNonTsExtensions: true,
+      lib: ["es6"], // Only add specific libs (es6, dom, ...)
+      noLib: false // If set to true, it removes all default libs for intellisense (es6, dom, ...)
+    });
   }
 
   abstract createInstance(): void;

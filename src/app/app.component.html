@@ -4,9 +4,16 @@
 
 <div class="container">
   <!-- Settings side panel -->
-  <app-settings [model]="model" (settingsChange)="settings = $event" (modelChange)="model = $event"></app-settings>
+  <app-settings [model]="model" (settingsChange)="onSettingsChange($event)" (modelChange)="model = $event"></app-settings>
 
   <!-- Code editor -->
-  <app-editor class="editor" *ngIf="settings.editor === 'editor'" [model]="model" (modelChange)="model = $event"></app-editor>
-  <app-diff-editor class="editor" *ngIf="settings.editor === 'diffEditor'"></app-diff-editor>
+  <app-editor
+    class="editor"
+    *ngIf="editorType === 'editor'"
+    [model]="model"
+    [options]="options"
+    [monacoOptions]="monacoOptions"
+    (modelChange)="model = $event"
+  ></app-editor>
+  <app-diff-editor class="editor" *ngIf="editorType === 'diffEditor'"></app-diff-editor>
 </div>

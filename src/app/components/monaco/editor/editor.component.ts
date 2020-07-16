@@ -12,6 +12,7 @@ declare const JSHINT;
 export class EditorComponent extends BaseDirective implements OnInit, OnChanges {
   @Input() model = "";
   @Input() options: { [key: string]: any } = {};
+  @Input() monacoOptions: { [key: string]: any } = {};
 
   defaultOptions: { [key: string]: any } = {
     language: "javascript",
@@ -45,22 +46,22 @@ export class EditorComponent extends BaseDirective implements OnInit, OnChanges 
       ...this.defaultOptions,
       ...this.options
     };
-    this.editor = (window as any).monaco.editor.create(view, options);
+    this.editor = monaco.editor.create(view, options);
     // Set initial value
     this.editor.setValue(this.model);
     // Trigger events on model change
     this.editor.onDidChangeModelContent(() => {
       this.model = this.editor.getValue();
       this.modelChange.emit(this.model);
-      if (options.language && options.language === "javascript") {
-        this.addJsLinting();
+      if (options.language && options.language === "javascript" && this.monacoOptions.useJsHint) {
+        this.addJsHintLinting();
       }
     });
   }
 
-  addJsLinting(): void {
+  addJsHintLinting(): void {
     JSHINT(this.model, { indent: 4, esversion: 6 }, {});
-    let markers = []; // TODO: add type monaco.editor.IMarker[] from monaco.d.ts
+    let markers: monaco.editor.IMarker[] = [];
     if (JSHINT.data().errors) {
       markers = JSHINT.data().errors.map((error: { [key: string]: any }) => ({
         startLineNumber: error.line,
@@ -68,13 +69,10 @@ export class EditorComponent extends BaseDirective implements OnInit, OnChanges 
         startColumn: error.character - 1,
         endColumn: error.character - 1,
         message: error.reason,
-        severity:
-          error.code && error.code.startsWith("E")
-            ? (window as any).monaco.MarkerSeverity.Error
-            : (window as any).monaco.MarkerSeverity.Warning,
+        severity: error.code && error.code.startsWith("E") ? monaco.MarkerSeverity.Error : monaco.MarkerSeverity.Warning,
         source: "jshint"
       }));
     }
-    (window as any).monaco.editor.setModelMarkers(this.editor.getModel(), "jshint", markers);
+    monaco.editor.setModelMarkers(this.editor.getModel(), "jshint", markers);
   }
 }

@@ -11,6 +11,29 @@
     </mat-radio-button>
   </mat-radio-group>
 
+  <label>Language</label>
+  <mat-radio-group
+    class="radio-group"
+    [disabled]="settings.editor === 'diffEditor'"
+    [ngModel]="settings.language"
+    (ngModelChange)="onSettingsChange('language', $event)"
+  >
+    <mat-radio-button class="radio-button" *ngFor="let language of languages" [value]="language.value">
+      {{ language.label }}
+    </mat-radio-button>
+  </mat-radio-group>
+
+  <mat-checkbox
+    class="checkbox"
+    [disabled]="settings.editor === 'diffEditor' || settings.language !== 'javascript'"
+    [ngModel]="settings.useJsHint"
+    (ngModelChange)="onSettingsChange('useJsHint', $event)"
+  >
+    Use JS Hint
+  </mat-checkbox>
+
+  <br />
+
   <label>Model</label>
   <textarea
     rows="10"
