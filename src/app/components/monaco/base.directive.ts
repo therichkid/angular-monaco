@@ -80,8 +80,9 @@ export abstract class BaseDirective implements AfterViewInit, OnDestroy {
     monaco.languages.typescript.javascriptDefaults.setCompilerOptions({
       target: monaco.languages.typescript.ScriptTarget.ES2015,
       allowNonTsExtensions: true,
-      lib: ["es6"], // Only add specific libs (es6, dom, ...)
-      noLib: false // If set to true, it removes all default libs for intellisense (es6, dom, ...)
+      checkJs: true,
+      allowJs: true,
+      lib: ["es6"] // Only add specific libs (es6, dom, ...). To remove all, add `noLib: true`
     });
   }
 
