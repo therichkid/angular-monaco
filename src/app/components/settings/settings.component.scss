@@ -5,3 +5,13 @@
   border-right: 2px solid #e4e4e4;
   box-sizing: border-box;
 }
+
+.radio-group {
+  display: flex;
+  flex-direction: column;
+  margin: 5px 0;
+}
+
+.radio-button {
+  margin: 5px;
+}

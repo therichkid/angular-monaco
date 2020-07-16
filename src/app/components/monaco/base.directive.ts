@@ -24,7 +24,9 @@ export abstract class BaseDirective implements AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.editor.getModel().dispose();
+    if (typeof this.editor.getModel.dispose === "function") {
+      this.editor.getModel().dispose();
+    }
     this.editor.dispose();
     const view: HTMLDivElement = this.containerView.nativeElement;
     this.resizeObserver.unobserve(view);

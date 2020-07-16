@@ -1,3 +1,23 @@
 <div class="container">
   <h2>Settings</h2>
+
+  <label>Editor</label>
+  <mat-radio-group class="radio-group" [ngModel]="settings.editor" (ngModelChange)="onSettingsChange('editor', $event)">
+    <mat-radio-button class="radio-button" value="editor">
+      Editor
+    </mat-radio-button>
+    <mat-radio-button class="radio-button" value="diffEditor">
+      Diff-Editor
+    </mat-radio-button>
+  </mat-radio-group>
+
+  <label>Model</label>
+  <textarea
+    rows="10"
+    style="width: 100%;"
+    [ngModel]="model"
+    (ngModelChange)="onModelChange($event)"
+    (focus)="isTextareaInFocus = true"
+    (blur)="isTextareaInFocus = false"
+  ></textarea>
 </div>
