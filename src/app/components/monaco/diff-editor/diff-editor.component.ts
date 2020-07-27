@@ -36,5 +36,12 @@ export class DiffEditorComponent extends BaseDirective implements OnInit {
     const originalModel = (window as any).monaco.editor.createModel(this.committedModel, "text/plain");
     const modifiedModel = (window as any).monaco.editor.createModel(this.workingModel, "text/plain");
     this.editor.setModel({ original: originalModel, modified: modifiedModel });
+
+    // TODO: merge view
+    // https://microsoft.github.io/monaco-editor/playground.html#interacting-with-the-editor-rendering-glyphs-in-the-margin
+    // https://microsoft.github.io/monaco-editor/playground.html#extending-language-services-codelens-provider-example
+    // https://github.com/Symbolk/IntelliMerge-UI
+    // https://medium.com/@lyuda.dzyubinska/monaco-editor-code-lens-provider-133ac9a13f84
+    // Access the modified editor: this.editor.getModifiedEditor();
   }
 }

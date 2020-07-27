@@ -16,9 +16,12 @@ export class EditorComponent extends BaseDirective implements OnInit, OnChanges 
 
   defaultOptions: { [key: string]: any } = {
     language: "javascript",
-    theme: "vs-dark"
+    theme: "vs-dark",
+    glyphMargin: true,
+    lineNumbersMinChars: 3
   };
   editor: { [key: string]: any };
+  breakpoints: number[] = [];
 
   @ViewChild("editor") view: ElementRef;
   @ViewChild("container") containerView: ElementRef;
@@ -57,6 +60,7 @@ export class EditorComponent extends BaseDirective implements OnInit, OnChanges 
         this.addJsHintLinting();
       }
     });
+    this.initBreakpointEventListener();
   }
 
   addJsHintLinting(): void {
@@ -74,5 +78,43 @@ export class EditorComponent extends BaseDirective implements OnInit, OnChanges 
       }));
     }
     monaco.editor.setModelMarkers(this.editor.getModel(), "jshint", markers);
+  }
+
+  initBreakpointEventListener(): void {
+    // Also see https://github.com/polylith/monaco-debugger
+    this.editor.onMouseDown((mouseEvent: monaco.editor.IEditorMouseEvent) => {
+      if (mouseEvent.target.type === 2) {
+        // 2 is the target number for clicks within the glyph margin
+        const line = mouseEvent.target.position?.lineNumber;
+        this.toggleBreakpoint(line);
+      }
+    });
+  }
+
+  toggleBreakpoint(line: number): void {
+    const lineIndex = this.breakpoints.indexOf(line);
+    if (lineIndex === -1) {
+      this.breakpoints.push(line);
+      this.addBreakpoint(line);
+    } else {
+      this.breakpoints.splice(lineIndex, 1);
+      this.removeBreakpoint(line);
+    }
+  }
+
+  addBreakpoint(line: number): void {
+    const decoration: monaco.editor.IModelDeltaDecoration = {
+      range: new monaco.Range(line, 1, line, 1),
+      options: { isWholeLine: false, glyphMarginClassName: "breakpoint" }
+    };
+    this.editor.deltaDecorations([], [decoration]);
+  }
+
+  removeBreakpoint(line: number): void {
+    const currentDecorations: monaco.editor.IModelDecoration[] = this.editor.getLineDecorations(line) || [];
+    this.editor.deltaDecorations(
+      currentDecorations.filter((value) => value.options.glyphMarginClassName === "breakpoint").map((value) => value.id),
+      []
+    );
   }
 }

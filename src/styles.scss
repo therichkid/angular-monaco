@@ -9,3 +9,10 @@ body {
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
 }
+
+// Needs to have global scope style
+.breakpoint {
+  background: red;
+  border-radius: 50%;
+  margin-left: 5px;
+}
