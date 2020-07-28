@@ -1,5 +1,5 @@
 <div class="container">
-  <h2>Settings</h2>
+  <h2 style="margin: 0 0 5px;">Main Settings</h2>
 
   <label>Editor</label>
   <mat-radio-group class="radio-group" [ngModel]="settings.editor" (ngModelChange)="onSettingsChange('editor', $event)">
@@ -23,17 +23,6 @@
     </mat-radio-button>
   </mat-radio-group>
 
-  <mat-checkbox
-    class="checkbox"
-    [disabled]="settings.editor === 'diffEditor' || settings.language !== 'javascript'"
-    [ngModel]="settings.useJsHint"
-    (ngModelChange)="onSettingsChange('useJsHint', $event)"
-  >
-    Use JS Hint
-  </mat-checkbox>
-
-  <br />
-
   <label>Model</label>
   <textarea
     rows="10"
@@ -43,4 +32,36 @@
     (focus)="isTextareaInFocus = true"
     (blur)="isTextareaInFocus = false"
   ></textarea>
+
+  <mat-checkbox
+    class="checkbox"
+    [disabled]="settings.editor === 'diffEditor'"
+    [ngModel]="settings.enableDebugging"
+    (ngModelChange)="onSettingsChange('enableDebugging', $event)"
+  >
+    Enable Debugging
+  </mat-checkbox>
+
+  <h2 style="margin: 10px 0 5px;">JS Settings</h2>
+  <mat-checkbox
+    class="checkbox"
+    [disabled]="settings.editor === 'diffEditor' || settings.language !== 'javascript'"
+    [ngModel]="settings.useJsHint"
+    (ngModelChange)="onSettingsChange('useJsHint', $event)"
+  >
+    Use JS Hint
+  </mat-checkbox>
+
+  <label>Extra Libs</label>
+  <textarea rows="5" style="width: 100%;" [(ngModel)]="extraLib"></textarea>
+  <button mat-raised-button (click)="addExtraLib()">Add</button>
+  <mat-form-field appearance="fill">
+    <mat-label>Extra Libs</mat-label>
+    <mat-select [(ngModel)]="extraLibToDelete">
+      <mat-option *ngFor="let lib of addedExtraLibs" [value]="lib">
+        {{ lib }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  <button mat-raised-button (click)="removeExtraLib()">Remove</button>
 </div>

@@ -14,7 +14,8 @@ export class AppComponent {
     language: "javascript"
   };
   monacoOptions: { [key: string]: any } = {
-    useJsHint: false
+    useJsHint: false,
+    enableDebugging: false
   };
 
   constructor() {}
@@ -23,6 +24,7 @@ export class AppComponent {
     this.editorType = null;
     this.options.language = settings.language;
     this.monacoOptions.useJsHint = settings.useJsHint;
+    this.monacoOptions.enableDebugging = settings.enableDebugging;
     setTimeout(() => {
       this.editorType = settings.editor;
     });

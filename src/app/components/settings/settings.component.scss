@@ -4,6 +4,8 @@
   padding: 10px;
   border-right: 2px solid #e4e4e4;
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
 }
 
 .radio-group {
@@ -18,4 +20,13 @@
 
 .checkbox {
   margin: 5px;
+}
+
+button {
+  margin-top: 5px;
+  margin-bottom: 10px;
+}
+
+::ng-deep .mat-form-field-wrapper {
+  margin-bottom: -1.25em;
 }

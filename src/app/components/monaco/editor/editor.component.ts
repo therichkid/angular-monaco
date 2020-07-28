@@ -60,7 +60,9 @@ export class EditorComponent extends BaseDirective implements OnInit, OnChanges 
         this.addJsHintLinting();
       }
     });
-    this.initBreakpointEventListener();
+    if (this.monacoOptions.enableDebugging) {
+      this.initBreakpointEventListener();
+    }
   }
 
   addJsHintLinting(): void {
@@ -81,7 +83,7 @@ export class EditorComponent extends BaseDirective implements OnInit, OnChanges 
   }
 
   initBreakpointEventListener(): void {
-    // Also see https://github.com/polylith/monaco-debugger
+    // https://github.com/polylith/monaco-debugger
     this.editor.onMouseDown((mouseEvent: monaco.editor.IEditorMouseEvent) => {
       if (mouseEvent.target.type === 2) {
         // 2 is the target number for clicks within the glyph margin
@@ -107,6 +109,10 @@ export class EditorComponent extends BaseDirective implements OnInit, OnChanges 
       range: new monaco.Range(line, 1, line, 1),
       options: { isWholeLine: false, glyphMarginClassName: "breakpoint" }
     };
+    // Fake an active breakpoint
+    if (this.editor.getModel().getAllDecorations().length === 4) {
+      decoration.options = { ...decoration.options, isWholeLine: true, className: "active-breakpoint" };
+    }
     this.editor.deltaDecorations([], [decoration]);
   }
 
@@ -116,5 +122,9 @@ export class EditorComponent extends BaseDirective implements OnInit, OnChanges 
       currentDecorations.filter((value) => value.options.glyphMarginClassName === "breakpoint").map((value) => value.id),
       []
     );
+  }
+
+  formatCode(): void {
+    this.editor.getAction("editor.action.formatDocument").run();
   }
 }

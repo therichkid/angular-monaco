@@ -15,4 +15,9 @@ body {
   background: red;
   border-radius: 50%;
   margin-left: 5px;
+  transform: scale(0.5);
+}
+
+.active-breakpoint {
+  background: #505050;
 }

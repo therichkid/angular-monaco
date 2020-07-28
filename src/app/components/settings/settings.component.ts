@@ -4,6 +4,7 @@ export interface Settings {
   editor: "editor" | "diffEditor";
   language: "typescript" | "javascript" | "json" | "sql";
   useJsHint?: boolean;
+  enableDebugging?: boolean;
 }
 
 @Component({
@@ -25,6 +26,15 @@ export class SettingsComponent implements OnInit {
     { label: "SQL", value: "sql" }
   ];
   isTextareaInFocus = false;
+  extraLib = `declare namespace myNamespace {
+  function myFun(myStr: string): void;
+  let myVar: number;
+  let myObj: {
+    myNestedStr: string
+  }
+}`;
+  addedExtraLibs: string[] = [];
+  extraLibToDelete: string;
   @Output() settingsChange = new EventEmitter<{ [key: string]: any }>();
   @Output() modelChange = new EventEmitter<string>();
 
@@ -41,5 +51,24 @@ export class SettingsComponent implements OnInit {
     if (this.isTextareaInFocus) {
       this.modelChange.emit(model);
     }
+  }
+
+  addExtraLib(): void {
+    // https://www.typescriptlang.org/docs/handbook/declaration-files/by-example.html
+    monaco.languages.typescript.javascriptDefaults.addExtraLib(this.extraLib);
+    this.addedExtraLibs.push(this.extraLib);
+  }
+
+  removeExtraLib(): void {
+    const libsToKeep = [];
+    for (const lib of Object.values(monaco.languages.typescript.javascriptDefaults.getExtraLibs())) {
+      if (lib.content !== this.extraLibToDelete) {
+        libsToKeep.push(lib);
+      } else {
+        console.log("About to delete", lib);
+        this.addedExtraLibs.filter((addedLib: string) => lib.content !== addedLib);
+      }
+    }
+    monaco.languages.typescript.javascriptDefaults.setExtraLibs(libsToKeep); // or [] to remove all extra libs at once
   }
 }
