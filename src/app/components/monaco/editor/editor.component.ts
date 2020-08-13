@@ -22,6 +22,7 @@ export class EditorComponent extends BaseDirective implements OnInit, OnChanges 
   };
   editor: { [key: string]: any };
   breakpoints: number[] = [];
+  currentlyActiveBreakpoint: number;
 
   @ViewChild("editor") view: ElementRef;
   @ViewChild("container") containerView: ElementRef;
@@ -96,11 +97,22 @@ export class EditorComponent extends BaseDirective implements OnInit, OnChanges 
   toggleBreakpoint(line: number): void {
     const lineIndex = this.breakpoints.indexOf(line);
     if (lineIndex === -1) {
-      this.breakpoints.push(line);
       this.addBreakpoint(line);
+      this.breakpoints.push(line);
     } else {
-      this.breakpoints.splice(lineIndex, 1);
       this.removeBreakpoint(line);
+      this.breakpoints.splice(lineIndex, 1);
+    }
+    // Add a mockup currently active breakpoint
+    if (this.breakpoints.length === 1 && !this.currentlyActiveBreakpoint) {
+      this.addCurrentlyActiveBreakpoint(line);
+      this.currentlyActiveBreakpoint = line;
+    } else if (!this.breakpoints.length || (lineIndex > -1 && this.currentlyActiveBreakpoint === line)) {
+      this.removeCurrentlyActiveBreakpoint(line);
+      this.currentlyActiveBreakpoint = null;
+      if (this.breakpoints.length) {
+        this.addCurrentlyActiveBreakpoint(this.breakpoints[0]);
+      }
     }
   }
 
@@ -109,10 +121,6 @@ export class EditorComponent extends BaseDirective implements OnInit, OnChanges 
       range: new monaco.Range(line, 1, line, 1),
       options: { isWholeLine: false, glyphMarginClassName: "breakpoint" }
     };
-    // Fake an active breakpoint
-    if (this.editor.getModel().getAllDecorations().length === 4) {
-      decoration.options = { ...decoration.options, isWholeLine: true, className: "active-breakpoint" };
-    }
     this.editor.deltaDecorations([], [decoration]);
   }
 
@@ -120,6 +128,22 @@ export class EditorComponent extends BaseDirective implements OnInit, OnChanges 
     const currentDecorations: monaco.editor.IModelDecoration[] = this.editor.getLineDecorations(line) || [];
     this.editor.deltaDecorations(
       currentDecorations.filter((value) => value.options.glyphMarginClassName === "breakpoint").map((value) => value.id),
+      []
+    );
+  }
+
+  addCurrentlyActiveBreakpoint(line: number): void {
+    const decoration: monaco.editor.IModelDeltaDecoration = {
+      range: new monaco.Range(line, 1, line, 1),
+      options: { isWholeLine: true, className: "active-breakpoint" }
+    };
+    this.editor.deltaDecorations([], [decoration]);
+  }
+
+  removeCurrentlyActiveBreakpoint(line: number): void {
+    const currentDecorations: monaco.editor.IModelDecoration[] = this.editor.getLineDecorations(line) || [];
+    this.editor.deltaDecorations(
+      currentDecorations.filter((value) => value.options.className === "active-breakpoint").map((value) => value.id),
       []
     );
   }
