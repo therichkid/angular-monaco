@@ -44,10 +44,6 @@ export class SettingsComponent implements OnInit {
 
   ngOnInit(): void {}
 
-  myTestChange(event) {
-    console.log("Event", event);
-  }
-
   onSettingsChange(key: string, value: string): void {
     this.settings[key] = value;
     this.settingsChange.emit({ ...this.settings });
