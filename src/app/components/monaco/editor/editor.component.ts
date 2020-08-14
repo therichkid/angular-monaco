@@ -98,18 +98,14 @@ export class EditorComponent extends BaseDirective implements OnInit, OnChanges 
     const lineIndex = this.breakpoints.indexOf(line);
     if (lineIndex === -1) {
       this.addBreakpoint(line);
-      this.breakpoints.push(line);
     } else {
       this.removeBreakpoint(line);
-      this.breakpoints.splice(lineIndex, 1);
     }
     // Add a mockup currently active breakpoint
     if (this.breakpoints.length === 1 && !this.currentlyActiveBreakpoint) {
       this.addCurrentlyActiveBreakpoint(line);
-      this.currentlyActiveBreakpoint = line;
     } else if (!this.breakpoints.length || (lineIndex > -1 && this.currentlyActiveBreakpoint === line)) {
       this.removeCurrentlyActiveBreakpoint(line);
-      this.currentlyActiveBreakpoint = null;
       if (this.breakpoints.length) {
         this.addCurrentlyActiveBreakpoint(this.breakpoints[0]);
       }
@@ -122,6 +118,7 @@ export class EditorComponent extends BaseDirective implements OnInit, OnChanges 
       options: { isWholeLine: false, glyphMarginClassName: "breakpoint" }
     };
     this.editor.deltaDecorations([], [decoration]);
+    this.breakpoints.push(line);
   }
 
   removeBreakpoint(line: number): void {
@@ -130,6 +127,8 @@ export class EditorComponent extends BaseDirective implements OnInit, OnChanges 
       currentDecorations.filter((value) => value.options.glyphMarginClassName === "breakpoint").map((value) => value.id),
       []
     );
+    const lineIndex = this.breakpoints.indexOf(line);
+    this.breakpoints.splice(lineIndex, 1);
   }
 
   addCurrentlyActiveBreakpoint(line: number): void {
@@ -138,6 +137,7 @@ export class EditorComponent extends BaseDirective implements OnInit, OnChanges 
       options: { isWholeLine: true, className: "active-breakpoint" }
     };
     this.editor.deltaDecorations([], [decoration]);
+    this.currentlyActiveBreakpoint = line;
   }
 
   removeCurrentlyActiveBreakpoint(line: number): void {
@@ -146,6 +146,7 @@ export class EditorComponent extends BaseDirective implements OnInit, OnChanges 
       currentDecorations.filter((value) => value.options.className === "active-breakpoint").map((value) => value.id),
       []
     );
+    this.currentlyActiveBreakpoint = null;
   }
 
   formatCode(): void {

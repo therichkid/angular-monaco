@@ -22,6 +22,12 @@
   margin: 5px;
 }
 
+.textarea {
+  width: 95%;
+  display: block;
+  margin: 0 auto;
+}
+
 button {
   margin-top: 5px;
   margin-bottom: 10px;
@@ -29,4 +35,9 @@ button {
 
 ::ng-deep .mat-form-field-wrapper {
   margin-bottom: -1.25em;
+}
+
+::ng-deep.mat-tab-label,
+::ng-deep.mat-tab-label-active {
+  min-width: 0 !important;
 }

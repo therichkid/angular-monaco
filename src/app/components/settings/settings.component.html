@@ -1,67 +1,57 @@
 <div class="container">
   <h2 style="margin: 0 0 5px;">Main Settings</h2>
 
-  <label>Editor</label>
-  <mat-radio-group class="radio-group" [ngModel]="settings.editor" (ngModelChange)="onSettingsChange('editor', $event)">
-    <mat-radio-button class="radio-button" value="editor">
-      Editor
-    </mat-radio-button>
-    <mat-radio-button class="radio-button" value="diffEditor">
-      Diff-Editor
-    </mat-radio-button>
-  </mat-radio-group>
+  <mat-tab-group (selectedIndexChange)="onSettingsChange('editor', $event === 0 ? 'editor' : 'diffEditor')">
+    <!-- Editor -->
+    <mat-tab label="Editor">
+      <label>Language</label>
+      <mat-radio-group class="radio-group" [ngModel]="settings.language" (ngModelChange)="onSettingsChange('language', $event)">
+        <mat-radio-button class="radio-button" *ngFor="let language of languages" [value]="language.value">
+          {{ language.label }}
+        </mat-radio-button>
+      </mat-radio-group>
 
-  <label>Language</label>
-  <mat-radio-group
-    class="radio-group"
-    [disabled]="settings.editor === 'diffEditor'"
-    [ngModel]="settings.language"
-    (ngModelChange)="onSettingsChange('language', $event)"
-  >
-    <mat-radio-button class="radio-button" *ngFor="let language of languages" [value]="language.value">
-      {{ language.label }}
-    </mat-radio-button>
-  </mat-radio-group>
+      <label>Model</label>
+      <textarea
+        rows="10"
+        [ngModel]="model"
+        (ngModelChange)="onModelChange($event)"
+        (focus)="isTextareaInFocus = true"
+        (blur)="isTextareaInFocus = false"
+        class="textarea"
+      ></textarea>
 
-  <label>Model</label>
-  <textarea
-    rows="10"
-    style="width: 100%;"
-    [ngModel]="model"
-    (ngModelChange)="onModelChange($event)"
-    (focus)="isTextareaInFocus = true"
-    (blur)="isTextareaInFocus = false"
-  ></textarea>
+      <mat-checkbox class="checkbox" [ngModel]="settings.enableDebugging" (ngModelChange)="onSettingsChange('enableDebugging', $event)">
+        Enable Debugging
+      </mat-checkbox>
 
-  <mat-checkbox
-    class="checkbox"
-    [disabled]="settings.editor === 'diffEditor'"
-    [ngModel]="settings.enableDebugging"
-    (ngModelChange)="onSettingsChange('enableDebugging', $event)"
-  >
-    Enable Debugging
-  </mat-checkbox>
+      <h2 style="margin: 10px 0 5px;">JS Settings</h2>
+      <mat-checkbox
+        class="checkbox"
+        [disabled]="settings.language !== 'javascript'"
+        [ngModel]="settings.useJsHint"
+        (ngModelChange)="onSettingsChange('useJsHint', $event)"
+      >
+        Use JS Hint
+      </mat-checkbox>
 
-  <h2 style="margin: 10px 0 5px;">JS Settings</h2>
-  <mat-checkbox
-    class="checkbox"
-    [disabled]="settings.editor === 'diffEditor' || settings.language !== 'javascript'"
-    [ngModel]="settings.useJsHint"
-    (ngModelChange)="onSettingsChange('useJsHint', $event)"
-  >
-    Use JS Hint
-  </mat-checkbox>
+      <label>Extra Libs</label>
+      <textarea rows="5" [(ngModel)]="extraLib" class="textarea"></textarea>
+      <button mat-raised-button (click)="addExtraLib()">Add</button>
+      <mat-form-field appearance="fill">
+        <mat-label>Extra Libs</mat-label>
+        <mat-select [(ngModel)]="extraLibToDelete">
+          <mat-option *ngFor="let lib of addedExtraLibs" [value]="lib">
+            {{ lib }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <button mat-raised-button (click)="removeExtraLib()">Remove</button>
+    </mat-tab>
 
-  <label>Extra Libs</label>
-  <textarea rows="5" style="width: 100%;" [(ngModel)]="extraLib"></textarea>
-  <button mat-raised-button (click)="addExtraLib()">Add</button>
-  <mat-form-field appearance="fill">
-    <mat-label>Extra Libs</mat-label>
-    <mat-select [(ngModel)]="extraLibToDelete">
-      <mat-option *ngFor="let lib of addedExtraLibs" [value]="lib">
-        {{ lib }}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
-  <button mat-raised-button (click)="removeExtraLib()">Remove</button>
+    <!-- Diff Editor -->
+    <mat-tab label="Diff Editor">
+      <label>TODO</label>
+    </mat-tab>
+  </mat-tab-group>
 </div>
