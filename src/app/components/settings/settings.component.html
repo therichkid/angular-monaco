@@ -1,5 +1,5 @@
 <div class="container">
-  <h2 style="margin: 0 0 5px;">Main Settings</h2>
+  <h2 style="margin: 0 0 5px">Main Settings</h2>
 
   <mat-tab-group (selectedIndexChange)="onSettingsChange('editor', $event === 0 ? 'editor' : 'diffEditor')">
     <!-- Editor -->
@@ -25,7 +25,7 @@
         Enable Debugging
       </mat-checkbox>
 
-      <h2 style="margin: 10px 0 5px;">JS Settings</h2>
+      <h2 style="margin: 10px 0 5px">JS Settings</h2>
       <mat-checkbox
         class="checkbox"
         [disabled]="settings.language !== 'javascript'"
@@ -35,7 +35,7 @@
         Use JS Hint
       </mat-checkbox>
 
-      <label>Extra Libs</label>
+      <h2 style="margin: 10px 0 5px">Extra Libs</h2>
       <textarea rows="5" [(ngModel)]="extraLib" class="textarea"></textarea>
       <button mat-raised-button (click)="addExtraLib()">Add</button>
       <mat-form-field appearance="fill">

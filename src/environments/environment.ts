@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  MONACO_BASE_PATH: "./assets/monaco",
+  MONACO_BASE_PATH: "./assets/monaco"
 };
 
 /*

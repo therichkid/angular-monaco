@@ -1,6 +1,3 @@
-// This reference is needed to get types for monaco in vs code
-/// <reference path="../../../../node_modules/monaco-editor/monaco.d.ts" />
-
 import { AfterViewInit, OnDestroy, ElementRef, Directive } from "@angular/core";
 
 import { environment } from "../../../environments/environment";

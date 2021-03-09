@@ -57,20 +57,26 @@ export class SettingsComponent implements OnInit {
 
   addExtraLib(): void {
     // https://www.typescriptlang.org/docs/handbook/declaration-files/by-example.html
+    monaco.languages.typescript.typescriptDefaults.addExtraLib(this.extraLib);
     monaco.languages.typescript.javascriptDefaults.addExtraLib(this.extraLib);
     this.addedExtraLibs.push(this.extraLib);
   }
 
   removeExtraLib(): void {
     const libsToKeep = [];
-    for (const lib of Object.values(monaco.languages.typescript.javascriptDefaults.getExtraLibs())) {
-      if (lib.content !== this.extraLibToDelete) {
-        libsToKeep.push(lib);
-      } else {
-        console.log("About to delete", lib);
-        this.addedExtraLibs.filter((addedLib: string) => lib.content !== addedLib);
+    const languageDefaults = ["typescriptDefaults", "javascriptDefaults"];
+    for (const languageDefault of languageDefaults) {
+      const extraLibs = Object.values(
+        monaco.languages.typescript[languageDefault].getExtraLibs() as monaco.languages.typescript.LanguageServiceDefaults
+      );
+      for (const lib of extraLibs) {
+        if (lib.content !== this.extraLibToDelete) {
+          libsToKeep.push(lib);
+        } else {
+          this.addedExtraLibs.filter((addedLib: string) => lib.content !== addedLib);
+        }
       }
+      monaco.languages.typescript[languageDefault].setExtraLibs(libsToKeep); // or [] to remove all extra libs at once
     }
-    monaco.languages.typescript.javascriptDefaults.setExtraLibs(libsToKeep); // or [] to remove all extra libs at once
   }
 }
