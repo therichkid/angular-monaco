@@ -38,8 +38,6 @@ export class SettingsComponent implements OnInit {
   @Output() settingsChange = new EventEmitter<{ [key: string]: any }>();
   @Output() modelChange = new EventEmitter<string>();
 
-  myTest: string;
-
   constructor() {}
 
   ngOnInit(): void {}
