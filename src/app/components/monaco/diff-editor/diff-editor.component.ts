@@ -29,12 +29,12 @@ export class DiffEditorComponent extends BaseDirective implements OnInit {
 
   createInstance(): void {
     const view: HTMLDivElement = this.view.nativeElement;
-    this.editor = (window as any).monaco.editor.createDiffEditor(view, {
+    this.editor = monaco.editor.createDiffEditor(view, {
       ...this.defaultOptions,
       ...this.options
     });
-    const originalModel = (window as any).monaco.editor.createModel(this.committedModel, "text/plain");
-    const modifiedModel = (window as any).monaco.editor.createModel(this.workingModel, "text/plain");
+    const originalModel = monaco.editor.createModel(this.committedModel, "text/plain");
+    const modifiedModel = monaco.editor.createModel(this.workingModel, "text/plain");
     this.editor.setModel({ original: originalModel, modified: modifiedModel });
 
     // TODO: merge view
